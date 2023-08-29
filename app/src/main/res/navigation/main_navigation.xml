@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/standardCalculatorFragment">
+
+    <fragment
+        android:id="@+id/standardCalculatorFragment"
+        android:name="com.yunns.calculator.StandardCalculatorFragment"
+        android:label="fragment_standard_calculator"
+        tools:layout="@layout/fragment_standard_calculator" />
+    <fragment
+        android:id="@+id/scientificCalculatorFragment"
+        android:name="com.yunns.calculator.ScientificCalculatorFragment"
+        android:label="fragment_scientific_calculator"
+        tools:layout="@layout/fragment_scientific_calculator" />
+</navigation>

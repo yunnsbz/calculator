@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StandardCalculatorFragment"
+    android:background="@color/primary_background">
+
+    <TextView
+        android:id="@+id/input_text_view"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:cursorVisible="true"
+        android:text="@string/islem"
+        android:textAlignment="viewEnd"
+        android:textIsSelectable="true"
+        android:textSize="60sp"
+        app:autoSizeMaxTextSize="60sp"
+        app:autoSizeMinTextSize="14sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        android:padding="8dp"
+        android:weightSum="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline">
+
+        <TableRow
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:ignore="ExtraText">
+
+            <Button
+                android:id="@+id/button_ac"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Ac_tusu_renk"
+                android:padding="0dp"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:text="AC"
+                android:textColor="@color/primary_foreground"
+                android:textSize="38sp" />
+
+            <Button
+                android:id="@+id/button_parantez"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/fonksiyon_tusu_renk"
+                android:text="( )"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="6dp"
+                android:textColor="@color/primary_foreground"
+                android:textSize="34sp" />
+
+            <Button
+                android:id="@+id/button_yuzde"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/fonksiyon_tusu_renk"
+                android:text="%"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_bolme"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/fonksiyon_tusu_renk"
+                android:padding="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:text="bol"
+                android:textColor="@color/primary_foreground"
+                android:textSize="36sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/sayiRowUst"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="7"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="8"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_9"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="9"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_carpma"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/fonksiyon_tusu_renk"
+                android:text="X"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/sayiRowOrta"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="4"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="5"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="6"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_cikarma"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/fonksiyon_tusu_renk"
+                android:text="-"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/sayiRowAlt"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="1"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="2"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="3"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_toplama"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/fonksiyon_tusu_renk"
+                android:text="+"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="num"
+                android:text="0"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_virgul"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:text="@string/virgul"
+                android:textColor="@color/primary_foreground"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/button_Backspace"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/Sayi_tusu_renk"
+                android:contentDescription="@string/backspace"
+                android:text=""
+                android:textSize="30sp"
+                app:icon="@drawable/backspace"
+                app:iconGravity="textStart"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                app:iconPadding="2dp"
+                app:iconSize="30dp"
+                app:iconTint="@color/primary_foreground" />
+
+            <Button
+                android:id="@+id/button_esittir"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/esittir_tusu_renk"
+                android:text="@string/equal"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="4dp"
+                android:textColor="@color/primary_foreground"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/outputTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:text="@string/sonuc"
+        android:textAlignment="viewEnd"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_text_view" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="191dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

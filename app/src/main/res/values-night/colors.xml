@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="Ac_tusu_renk">#20444A</color>
+    <color name="fonksiyon_tusu_renk">#384C3B</color>
+    <color name="Sayi_tusu_renk">#242B24</color>
+    <color name="primary_foreground">#C1C1C1</color>
+    <color name="esittir_tusu_renk">#245736</color>
+    <color name="primary_background">#1B1C1A</color>
+</resources>

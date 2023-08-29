@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">hesap makinesi</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="equal">=</string>
+    <string name="backspace">backspace</string>
+    <string name="virgul">,</string>
+    <string name="sonuc">sonuc</string>
+    <string name="islem">işlem</string>
+    <string name="num">num</string>
+    <string name="_0">0</string>
+
+</resources>
