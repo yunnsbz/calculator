@@ -15,7 +15,7 @@ import kotlin.math.sin
 import kotlin.math.tan
 
 
-var sayiVeIslemler = Stack<Operation>()
+var NumbersAndOperators = Stack<Operation>()
 
 //işlemlerde kullanılacak temp sayılar
 var tempNumHolder1 : Double = 0.0
@@ -37,7 +37,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Carpma -> {
                 val isMultiplicationPossible =
                     if (i + 2 > myStack.size - 1) true
-                    else (myStack[i + 2] !is Yuzde) && (myStack[i + 2] !is Virgul) && (myStack[i + 1] !is ParantezAc)
+                    else (myStack[i].oncelikDegeri > myStack[i + 1].oncelikDegeri) && (myStack[i].oncelikDegeri  > myStack[i + 2].oncelikDegeri)
 
                 if (isMultiplicationPossible) {
                     myStack.removeAt(i)
@@ -52,7 +52,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Bolme -> {
                 val isDivisionPossible =
                     if (i + 2 > myStack.size - 1) true
-                    else (myStack[i + 2] !is Yuzde) && (myStack[i + 2] !is Virgul) && (myStack[i + 1] !is ParantezAc)
+                    else (myStack[i].oncelikDegeri > myStack[i + 1].oncelikDegeri) && (myStack[i].oncelikDegeri  > myStack[i + 2].oncelikDegeri)
 
                 if (isDivisionPossible) {
                     myStack.removeAt(i)
@@ -80,7 +80,8 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Toplama -> {
                 val isAdditionPossible =
                     if (i + 2 > myStack.size - 1) true
-                    else (myStack[i + 2] !is Carpma) && (myStack[i + 2] !is Bolme) && (myStack[i + 2] !is Yuzde) && (myStack[i + 2] !is Virgul) && (myStack[i + 1] !is ParantezAc)
+                    else (myStack[i].oncelikDegeri > myStack[i + 1].oncelikDegeri) && (myStack[i].oncelikDegeri  > myStack[i + 2].oncelikDegeri)
+                        //(myStack[i + 2] !is Carpma) && (myStack[i + 2] !is Bolme) && (myStack[i + 2] !is Yuzde) && (myStack[i + 2] !is Virgul) && (myStack[i + 1] !is ParantezAc)
 
                 if (isAdditionPossible) {
 
@@ -206,8 +207,8 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                 var result = sin(radian)
                 result = fixFloatingNum(result.toString()).toDouble()
 
-                //myStack.add(i, result.toString())
-                degreePart += result
+                myStack.add(i, Number(result.toString()))
+
 
                 i = -1
             }
@@ -249,8 +250,8 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = asin(tempNumHolder2)* (180 / PI)
 
-                myStack.add(i, Number(result.toString()))
-
+                //myStack.add(i, Number(result.toString()))
+                degreePart += result
                 i = -1
             }
             is ArcCosine -> {
@@ -258,7 +259,8 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = acos(tempNumHolder2)* (180 / PI)
 
-                myStack.add(i, Number(result.toString()))
+                //myStack.add(i, Number(result.toString()))
+                degreePart += result
 
                 i = -1
             }
@@ -267,7 +269,8 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = atan(tempNumHolder2)* (180 / PI)
 
-                myStack.add(i, Number(result.toString()))
+                //myStack.add(i, Number(result.toString()))
+                degreePart += result
 
                 i = -1
             }
@@ -276,7 +279,8 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = atan(1.0 / tempNumHolder2)* (180 / PI)
 
-                myStack.add(i, Number(result.toString()))
+                //myStack.add(i, Number(result.toString()))
+                degreePart += result
 
                 i = -1
             }

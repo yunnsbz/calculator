@@ -12,7 +12,6 @@ import android.widget.TableRow
 import android.widget.Toast
 import androidx.core.view.get
 import com.yunns.calculator.databinding.FragmentStandardCalculatorBinding
-import java.lang.Exception
 import kotlin.math.roundToInt
 
 
@@ -23,7 +22,7 @@ class StandardCalculatorFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         tasarim = FragmentStandardCalculatorBinding.inflate(layoutInflater,container,false)
-        sayiVeIslemler.removeAllElements()
+        NumbersAndOperators.removeAllElements()
 
         //special symbol for divide operator:
         tasarim.buttonBolme.text = 247.toChar().toString()
@@ -43,18 +42,18 @@ class StandardCalculatorFragment : Fragment() {
                     txt += islem.sembolDegeri
                     tasarim.inputTextView.text = txt
 
-                    sayiVeIslemler.pop()
-                    sayiVeIslemler.push(islem)
+                    NumbersAndOperators.pop()
+                    NumbersAndOperators.push(islem)
 
-                    for (i in sayiVeIslemler.indices) Log.e("stack $i:", sayiVeIslemler[i].stringDegeri)
+                    for (i in NumbersAndOperators.indices) Log.e("stack $i:", NumbersAndOperators[i].stringDegeri)
                     Log.e("stack end:", "-------------------------")
                 } else {
 
                     txt += islem.sembolDegeri
                     tasarim.inputTextView.text = txt
 
-                    sayiVeIslemler.push(islem)
-                    for (i in sayiVeIslemler.indices) Log.e("stack $i:", sayiVeIslemler[i].stringDegeri)
+                    NumbersAndOperators.push(islem)
+                    for (i in NumbersAndOperators.indices) Log.e("stack $i:", NumbersAndOperators[i].stringDegeri)
                     Log.e("stack end:", "-------------------------")
                 }
                 isNumberEnteringContinue = false
@@ -78,7 +77,7 @@ class StandardCalculatorFragment : Fragment() {
 
                     if(button.contentDescription == "num") {
                         button.setOnClickListener{
-                            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() !is ParantezKapa) {
+                            if(NumbersAndOperators.isEmpty() || NumbersAndOperators.lastElement() !is ParantezKapa) {
                                 txt += button.text.toString()
                                 tasarim.inputTextView.text = txt
                                 //sayıyı Stack'e ekleme:
@@ -102,13 +101,13 @@ class StandardCalculatorFragment : Fragment() {
                                 }
                                 if (!isThereOperator) {
                                     lastEnteredOperationIndex = 0
-                                    if (sayiVeIslemler.isNotEmpty()) sayiVeIslemler.pop()// yeni gelecek sayıyı eklemek için
+                                    if (NumbersAndOperators.isNotEmpty()) NumbersAndOperators.pop()// yeni gelecek sayıyı eklemek için
                                 } else if (isNumberEnteringContinue) { // birçok yerde değişen durum (sayı silmede: true, işlem butonu basma: false)
-                                    if (sayiVeIslemler.isNotEmpty()) sayiVeIslemler.pop()
+                                    if (NumbersAndOperators.isNotEmpty()) NumbersAndOperators.pop()
                                 }
                                 val lastEnteredNumber =
                                     txt.substring(lastEnteredOperationIndex, txt.length)
-                                sayiVeIslemler.push(Number(lastEnteredNumber))
+                                NumbersAndOperators.push(Number(lastEnteredNumber))
                                 isNumberEnteringContinue = true
                             }
                         }
@@ -126,28 +125,25 @@ class StandardCalculatorFragment : Fragment() {
                 tasarim.inputTextView.text = txt
 
             //stack'ten silme işlemi:
-                for (i in sayiVeIslemler.indices)  Log.e("silmeden önce stack $i:", sayiVeIslemler[i].stringDegeri)
+                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringDegeri)
                 Log.e("stack end:", "-------------------------")
 
-                val lastIndexOfStackIsOperator: Boolean = try {
-                    sayiVeIslemler.last().stringDegeri.toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
-                    false
-                } catch (e: Exception) { true }
+                val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Number)
 
-                if(lastIndexOfStackIsOperator && sayiVeIslemler.isNotEmpty()){
-                    sayiVeIslemler.pop()
-                } else if(sayiVeIslemler.isNotEmpty()){
-                    val tempNum = sayiVeIslemler.last().stringDegeri.removeSuffix(removedChar.toString())
-                    sayiVeIslemler.pop()
+                if(lastIndexOfStackIsOperator && NumbersAndOperators.isNotEmpty()){
+                    NumbersAndOperators.pop()
+                } else if(NumbersAndOperators.isNotEmpty()){
+                    val tempNum = NumbersAndOperators.last().stringDegeri.removeSuffix(removedChar.toString())
+                    NumbersAndOperators.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
-                        sayiVeIslemler.push(Number(tempNum))
+                        NumbersAndOperators.push(Number(tempNum))
                         true
                     } else false
 
                 }
             }
             else{
-                sayiVeIslemler.removeAllElements()
+                NumbersAndOperators.removeAllElements()
                 tasarim.inputTextView.text = ""
                 tasarim.outputTextView.text = ""
             }
@@ -158,7 +154,7 @@ class StandardCalculatorFragment : Fragment() {
             txt = ""
             tasarim.inputTextView.text = txt
             tasarim.outputTextView.text = ""
-            sayiVeIslemler.removeAllElements()
+            NumbersAndOperators.removeAllElements()
 
             isStartingWithOperator = false
             hasUnclosedParentheses = false
@@ -204,18 +200,18 @@ class StandardCalculatorFragment : Fragment() {
                 "(("  ->  parantez açık varsa tekrar parantez eklenirse yine parantez aç gelir
                 "))"  ->  parantez kapalı varsa ve tekrar parantez tuşuna basılırsa parantez kapa gelir
              */
-            val lastIndexOfStackIsOperator: Boolean = (sayiVeIslemler.last().funcIndex != -1)
+            val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Number)
 
             //her parantezAc için bir parantezKapa yok ise parantez kapa gelmesi gerekir yani isThereParentheses true olur
             var parenthesesCount = 0
-            for(i in sayiVeIslemler.indices){
-                if(sayiVeIslemler[i] is ParantezAc) parenthesesCount++
-                if(sayiVeIslemler[i] is ParantezKapa) parenthesesCount--
+            for(i in NumbersAndOperators.indices){
+                if(NumbersAndOperators[i] is ParantezAc) parenthesesCount++
+                if(NumbersAndOperators[i] is ParantezKapa) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 
 
-            if(sayiVeIslemler.isNotEmpty() && sayiVeIslemler[sayiVeIslemler.size-1] is ParantezKapa) {
+            if(NumbersAndOperators.isNotEmpty() && NumbersAndOperators[NumbersAndOperators.size-1] is ParantezKapa) {
                 operationButtonClick(ParantezKapa()) //özel durum 2. seçenek "))"
             }
             else {
@@ -239,18 +235,18 @@ class StandardCalculatorFragment : Fragment() {
 
     //eşittir butonu
         tasarim.buttonEsittir.setOnClickListener {
-            for (i in sayiVeIslemler.indices)  Log.e("işlem öncesi stack $i:", sayiVeIslemler[i].stringDegeri)
+            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].stringDegeri)
             Log.e("stack :", "-------------------------")
 
             var parenthesesCount = 0
-            for(i in sayiVeIslemler.indices){
-                if(sayiVeIslemler[i] is ParantezAc) parenthesesCount++
-                if(sayiVeIslemler[i] is ParantezKapa) parenthesesCount--
+            for(i in NumbersAndOperators.indices){
+                if(NumbersAndOperators[i] is ParantezAc) parenthesesCount++
+                if(NumbersAndOperators[i] is ParantezKapa) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 
             if(txt.isNotEmpty() && !hasUnclosedParentheses) {
-                var result = solveOperation(sayiVeIslemler)
+                var result = solveOperation(NumbersAndOperators)
                 result = fixFloatingNum(result)
 
                 val redundantFloatingPoint = (result.last() == '0') && (result[result.length-2] == '.')
