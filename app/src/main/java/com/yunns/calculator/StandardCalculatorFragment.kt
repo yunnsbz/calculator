@@ -44,17 +44,17 @@ class StandardCalculatorFragment : Fragment() {
                     tasarim.inputTextView.text = txt
 
                     sayiVeIslemler.pop()
-                    sayiVeIslemler.push(islem.stringDegeri)
+                    sayiVeIslemler.push(islem)
 
-                    for (i in sayiVeIslemler.indices) Log.e("stack $i:", sayiVeIslemler[i])
+                    for (i in sayiVeIslemler.indices) Log.e("stack $i:", sayiVeIslemler[i].stringDegeri)
                     Log.e("stack end:", "-------------------------")
                 } else {
 
                     txt += islem.sembolDegeri
                     tasarim.inputTextView.text = txt
 
-                    sayiVeIslemler.push(islem.stringDegeri)
-                    for (i in sayiVeIslemler.indices) Log.e("stack $i:", sayiVeIslemler[i])
+                    sayiVeIslemler.push(islem)
+                    for (i in sayiVeIslemler.indices) Log.e("stack $i:", sayiVeIslemler[i].stringDegeri)
                     Log.e("stack end:", "-------------------------")
                 }
                 isNumberEnteringContinue = false
@@ -78,7 +78,7 @@ class StandardCalculatorFragment : Fragment() {
 
                     if(button.contentDescription == "num") {
                         button.setOnClickListener{
-                            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() != "parantezKapa") {
+                            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() !is ParantezKapa) {
                                 txt += button.text.toString()
                                 tasarim.inputTextView.text = txt
                                 //sayıyı Stack'e ekleme:
@@ -108,7 +108,7 @@ class StandardCalculatorFragment : Fragment() {
                                 }
                                 val lastEnteredNumber =
                                     txt.substring(lastEnteredOperationIndex, txt.length)
-                                sayiVeIslemler.push(lastEnteredNumber)
+                                sayiVeIslemler.push(Number(lastEnteredNumber))
                                 isNumberEnteringContinue = true
                             }
                         }
@@ -126,21 +126,21 @@ class StandardCalculatorFragment : Fragment() {
                 tasarim.inputTextView.text = txt
 
             //stack'ten silme işlemi:
-                for (i in sayiVeIslemler.indices)  Log.e("silmeden önce stack $i:", sayiVeIslemler[i])
+                for (i in sayiVeIslemler.indices)  Log.e("silmeden önce stack $i:", sayiVeIslemler[i].stringDegeri)
                 Log.e("stack end:", "-------------------------")
 
                 val lastIndexOfStackIsOperator: Boolean = try {
-                    sayiVeIslemler.last().toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
+                    sayiVeIslemler.last().stringDegeri.toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
                     false
                 } catch (e: Exception) { true }
 
                 if(lastIndexOfStackIsOperator && sayiVeIslemler.isNotEmpty()){
                     sayiVeIslemler.pop()
                 } else if(sayiVeIslemler.isNotEmpty()){
-                    val tempNum = sayiVeIslemler.last().removeSuffix(removedChar.toString())
+                    val tempNum = sayiVeIslemler.last().stringDegeri.removeSuffix(removedChar.toString())
                     sayiVeIslemler.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
-                        sayiVeIslemler.push(tempNum)
+                        sayiVeIslemler.push(Number(tempNum))
                         true
                     } else false
 
@@ -204,21 +204,18 @@ class StandardCalculatorFragment : Fragment() {
                 "(("  ->  parantez açık varsa tekrar parantez eklenirse yine parantez aç gelir
                 "))"  ->  parantez kapalı varsa ve tekrar parantez tuşuna basılırsa parantez kapa gelir
              */
-            val lastIndexOfStackIsOperator: Boolean = try {
-            sayiVeIslemler.last().toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
-            false
-            } catch (e: Exception) { true }
+            val lastIndexOfStackIsOperator: Boolean = (sayiVeIslemler.last().funcIndex != -1)
 
             //her parantezAc için bir parantezKapa yok ise parantez kapa gelmesi gerekir yani isThereParentheses true olur
             var parenthesesCount = 0
             for(i in sayiVeIslemler.indices){
-                if(sayiVeIslemler[i] == "parantezAc") parenthesesCount++
-                if(sayiVeIslemler[i] == "parantezKapa") parenthesesCount--
+                if(sayiVeIslemler[i] is ParantezAc) parenthesesCount++
+                if(sayiVeIslemler[i] is ParantezKapa) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 
 
-            if(sayiVeIslemler.isNotEmpty() && sayiVeIslemler[sayiVeIslemler.size-1] == "parantezKapa") {
+            if(sayiVeIslemler.isNotEmpty() && sayiVeIslemler[sayiVeIslemler.size-1] is ParantezKapa) {
                 operationButtonClick(ParantezKapa()) //özel durum 2. seçenek "))"
             }
             else {
@@ -242,13 +239,13 @@ class StandardCalculatorFragment : Fragment() {
 
     //eşittir butonu
         tasarim.buttonEsittir.setOnClickListener {
-            for (i in sayiVeIslemler.indices)  Log.e("işlem öncesi stack $i:", sayiVeIslemler[i])
+            for (i in sayiVeIslemler.indices)  Log.e("işlem öncesi stack $i:", sayiVeIslemler[i].stringDegeri)
             Log.e("stack :", "-------------------------")
 
             var parenthesesCount = 0
             for(i in sayiVeIslemler.indices){
-                if(sayiVeIslemler[i] == "parantezAc") parenthesesCount++
-                if(sayiVeIslemler[i] == "parantezKapa") parenthesesCount--
+                if(sayiVeIslemler[i] is ParantezAc) parenthesesCount++
+                if(sayiVeIslemler[i] is ParantezKapa) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 

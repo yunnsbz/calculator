@@ -19,8 +19,9 @@ class ScientificCalculatorFragment : Fragment() {
 
     lateinit var tasarim: FragmentScientificCalculatorBinding
 
+
     @SuppressLint("SetTextI18n")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         tasarim = FragmentScientificCalculatorBinding.inflate(layoutInflater,container,false)
         sayiVeIslemler.removeAllElements()
 
@@ -56,14 +57,14 @@ class ScientificCalculatorFragment : Fragment() {
                     tasarim.inputTextView2.text = txt
 
                     sayiVeIslemler.pop()
-                    sayiVeIslemler.push(islem.stringDegeri)
+                    sayiVeIslemler.push(islem)
 
 
                 } else {
                     txt += islem.sembolDegeri
                     tasarim.inputTextView2.text = txt
 
-                    sayiVeIslemler.push(islem.stringDegeri)
+                    sayiVeIslemler.push(islem)
 
                 }
 
@@ -90,7 +91,7 @@ class ScientificCalculatorFragment : Fragment() {
 
                     if(button.contentDescription == "num") {
                         button.setOnClickListener{
-                            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() != "parantezKapa") {
+                            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() !is ParantezKapa) {
                                 txt += button.text.toString()
                                 tasarim.inputTextView2.text = txt
 
@@ -121,7 +122,7 @@ class ScientificCalculatorFragment : Fragment() {
                                 }
                                 val lastEnteredNumber =
                                     txt.substring(lastEnteredOperationIndex, txt.length)
-                                sayiVeIslemler.push(lastEnteredNumber)
+                                sayiVeIslemler.push(Number(lastEnteredNumber))
                                 isNumberEnteringContinue = true
                             }
                         }
@@ -131,23 +132,23 @@ class ScientificCalculatorFragment : Fragment() {
         }
 
         tasarim.buttonE.setOnClickListener {
-            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() != "parantezKapa") {
+            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() !is ParantezKapa) {
                 txt += "e" // E symbol
                 tasarim.inputTextView2.text = txt
 
                 //sayıyı Stack'e ekleme:
-                sayiVeIslemler.push(E.toString())
+                sayiVeIslemler.push(Number(E.toString()))
                 isNumberEnteringContinue = false
             }
         }
 
         tasarim.buttonPi.setOnClickListener {
-            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() != "parantezKapa") {
+            if(sayiVeIslemler.isEmpty() || sayiVeIslemler.lastElement() !is ParantezKapa) {
                 txt += 960.toChar().toString() // pi symbol
                 tasarim.inputTextView2.text = txt
 
                 //sayıyı Stack'e ekleme:
-                sayiVeIslemler.push(PI.toString())
+                sayiVeIslemler.push(Number(PI.toString()))
                 isNumberEnteringContinue = false
             }
         }
@@ -162,21 +163,21 @@ class ScientificCalculatorFragment : Fragment() {
                 tasarim.inputTextView2.text = txt
 
                 //stack'ten silme işlemi:
-                for (i in sayiVeIslemler.indices)  Log.e("silmeden önce stack $i:", sayiVeIslemler[i])
+                for (i in sayiVeIslemler.indices)  Log.e("silmeden önce stack $i:", sayiVeIslemler[i].stringDegeri)
                 Log.e("stack end:", "-------------------------")
 
                 val lastIndexOfStackIsOperator: Boolean = try {
-                    sayiVeIslemler.last().toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
+                    sayiVeIslemler.last().stringDegeri.toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
                     false
                 } catch (e: Exception) { true }
 
                 if(lastIndexOfStackIsOperator && sayiVeIslemler.isNotEmpty()){
                     sayiVeIslemler.pop()
                 } else if(sayiVeIslemler.isNotEmpty()){
-                    val tempNum = sayiVeIslemler.last().removeSuffix(removedChar.toString())
+                    val tempNum = sayiVeIslemler.last().stringDegeri.removeSuffix(removedChar.toString())
                     sayiVeIslemler.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
-                        sayiVeIslemler.push(tempNum)
+                        sayiVeIslemler.push(Number(tempNum))
                         true
                     } else false
 
@@ -235,20 +236,20 @@ class ScientificCalculatorFragment : Fragment() {
                 "))"  ->  parantez kapalı varsa ve tekrar parantez tuşuna basılırsa parantez kapa gelir
              */
             val lastIndexOfStackIsOperator: Boolean = try {
-                sayiVeIslemler.last().toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
+                sayiVeIslemler.last().stringDegeri.toLong() //sayı ise int dönüşür değilse catch bloğuna geçer
                 false
             } catch (e: Exception) { true }
 
             //her parantezAc için bir parantezKapa yok ise parantez kapa gelmesi gerekir yani isThereParentheses true olur
             var parenthesesCount = 0
             for(i in sayiVeIslemler.indices){
-                if(sayiVeIslemler[i] == "parantezAc") parenthesesCount++
-                if(sayiVeIslemler[i] == "parantezKapa") parenthesesCount--
+                if(sayiVeIslemler[i] is ParantezAc) parenthesesCount++
+                if(sayiVeIslemler[i] is ParantezKapa) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 
 
-            if(sayiVeIslemler.isNotEmpty() && sayiVeIslemler[sayiVeIslemler.size-1] == "parantezKapa") {
+            if(sayiVeIslemler.isNotEmpty() && sayiVeIslemler[sayiVeIslemler.size-1] is ParantezKapa) {
                 operationButtonClick(ParantezKapa()) //özel durum 2. seçenek "))"
             }
             else {
@@ -272,13 +273,13 @@ class ScientificCalculatorFragment : Fragment() {
 
         //equal button
         tasarim.buttonEsittir.setOnClickListener {
-            for (i in sayiVeIslemler.indices)  Log.e("işlem öncesi stack $i:", sayiVeIslemler[i])
+            for (i in sayiVeIslemler.indices)  Log.e("işlem öncesi stack $i:", sayiVeIslemler[i].stringDegeri)
             Log.e("stack :", "-------------------------")
 
             var parenthesesCount = 0
             for(i in sayiVeIslemler.indices){
-                if(sayiVeIslemler[i] == "parantezAc") parenthesesCount++
-                if(sayiVeIslemler[i] == "parantezKapa") parenthesesCount--
+                if(sayiVeIslemler[i] is ParantezAc) parenthesesCount++
+                if(sayiVeIslemler[i] is ParantezKapa) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 
