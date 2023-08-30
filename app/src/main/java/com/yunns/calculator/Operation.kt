@@ -8,12 +8,11 @@ interface Operation{
 
 }
 
-class Number(value: String) : Operation{
+class Numbers(value: String) : Operation {
     override val funcIndex = -1
     override val oncelikDegeri = -1
     override var stringDegeri = value
     override val sembolDegeri = value
-
 }
 
 class Carpma : Operation{
@@ -65,13 +64,13 @@ class Virgul : Operation{
     override val sembolDegeri = ","
 }
 
-class ParantezAc : Operation{
+class OpenParenthesis : Operation{
     override val funcIndex = 4
     override val oncelikDegeri = 5
     override val stringDegeri = "parantezAc"
     override val sembolDegeri = "("
 }
-class ParantezKapa : Operation{
+class ClosedParenthesis : Operation{
     override val funcIndex = 5
     override val oncelikDegeri = 5
     override val stringDegeri = "parantezKapa"

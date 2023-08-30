@@ -32,9 +32,13 @@ class StandardCalculatorFragment : Fragment() {
         var hasUnclosedParentheses: Boolean //parantez hiç yoksa yada tüm parantezler kapalı ise = false
 
         fun operationButtonClick(islem: Operation){
-            if(txt.isNotEmpty()|| islem is ParantezAc) {
+
+            val isParenthesisAllowed = !(NumbersAndOperators.isNotEmpty() && NumbersAndOperators.last() is Numbers && islem is OpenParenthesis) //number cannot come before parenthesis
+            if(isParenthesisAllowed && (txt.isNotEmpty()|| islem is OpenParenthesis)) {
+
+
                 //zaten bir işleme basılmışsa onu değiştir:
-                val operationAllreadyEntered = if(islem is ParantezAc) false
+                val operationAllreadyEntered = if(islem is OpenParenthesis) false
                 else ( (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == ',') || (txt.last() == '('))&& (islem.sembolDegeri != "(")
 
                 if (operationAllreadyEntered) {
@@ -44,17 +48,11 @@ class StandardCalculatorFragment : Fragment() {
 
                     NumbersAndOperators.pop()
                     NumbersAndOperators.push(islem)
-
-                    for (i in NumbersAndOperators.indices) Log.e("stack $i:", NumbersAndOperators[i].stringDegeri)
-                    Log.e("stack end:", "-------------------------")
                 } else {
-
                     txt += islem.sembolDegeri
                     tasarim.inputTextView.text = txt
 
                     NumbersAndOperators.push(islem)
-                    for (i in NumbersAndOperators.indices) Log.e("stack $i:", NumbersAndOperators[i].stringDegeri)
-                    Log.e("stack end:", "-------------------------")
                 }
                 isNumberEnteringContinue = false
             }
@@ -77,7 +75,7 @@ class StandardCalculatorFragment : Fragment() {
 
                     if(button.contentDescription == "num") {
                         button.setOnClickListener{
-                            if(NumbersAndOperators.isEmpty() || NumbersAndOperators.lastElement() !is ParantezKapa) {
+                            if(NumbersAndOperators.isEmpty() || NumbersAndOperators.lastElement() !is ClosedParenthesis) {
                                 txt += button.text.toString()
                                 tasarim.inputTextView.text = txt
                                 //sayıyı Stack'e ekleme:
@@ -107,7 +105,7 @@ class StandardCalculatorFragment : Fragment() {
                                 }
                                 val lastEnteredNumber =
                                     txt.substring(lastEnteredOperationIndex, txt.length)
-                                NumbersAndOperators.push(Number(lastEnteredNumber))
+                                NumbersAndOperators.push(Numbers(lastEnteredNumber))
                                 isNumberEnteringContinue = true
                             }
                         }
@@ -128,7 +126,7 @@ class StandardCalculatorFragment : Fragment() {
                 for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringDegeri)
                 Log.e("stack end:", "-------------------------")
 
-                val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Number)
+                val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Numbers)
 
                 if(lastIndexOfStackIsOperator && NumbersAndOperators.isNotEmpty()){
                     NumbersAndOperators.pop()
@@ -136,7 +134,7 @@ class StandardCalculatorFragment : Fragment() {
                     val tempNum = NumbersAndOperators.last().stringDegeri.removeSuffix(removedChar.toString())
                     NumbersAndOperators.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
-                        NumbersAndOperators.push(Number(tempNum))
+                        NumbersAndOperators.push(Numbers(tempNum))
                         true
                     } else false
 
@@ -192,7 +190,7 @@ class StandardCalculatorFragment : Fragment() {
             /*
             1. durum: parantez hiç yoksa her durumda "parantez aç" gelir
                 sayı işlem parantez ... parantez -> sayı parantez içi ile (işlem önceliğine göre) işlemi gerçekleştirir
-                sayı parantez ... parantez -> sayı parantez içi ile çarpım durumundadır
+                sayı parantez ... parantez -> sayı parantez içi ile çarpım durumundadır  --> kullanılmayacak
             2. durum: parantez var parantez içindeki son elemanın sayı ya da işlem olmasına göre parantezin açılıp kapanacağı belirlenir:
                 ... "parantez aç" sayı işlem "parantez aç" ...
                 ... "parantez aç" sayı "parantez kapa" ...
@@ -200,34 +198,34 @@ class StandardCalculatorFragment : Fragment() {
                 "(("  ->  parantez açık varsa tekrar parantez eklenirse yine parantez aç gelir
                 "))"  ->  parantez kapalı varsa ve tekrar parantez tuşuna basılırsa parantez kapa gelir
              */
-            val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Number)
+            val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.isNotEmpty()) && (NumbersAndOperators.last() !is Numbers)
 
             //her parantezAc için bir parantezKapa yok ise parantez kapa gelmesi gerekir yani isThereParentheses true olur
             var parenthesesCount = 0
             for(i in NumbersAndOperators.indices){
-                if(NumbersAndOperators[i] is ParantezAc) parenthesesCount++
-                if(NumbersAndOperators[i] is ParantezKapa) parenthesesCount--
+                if(NumbersAndOperators[i] is OpenParenthesis) parenthesesCount++
+                if(NumbersAndOperators[i] is ClosedParenthesis) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 
 
-            if(NumbersAndOperators.isNotEmpty() && NumbersAndOperators[NumbersAndOperators.size-1] is ParantezKapa) {
-                operationButtonClick(ParantezKapa()) //özel durum 2. seçenek "))"
+            if(NumbersAndOperators.isNotEmpty() && NumbersAndOperators[NumbersAndOperators.size-1] is ClosedParenthesis) {
+                operationButtonClick(ClosedParenthesis()) //özel durum 2. seçenek "))"
             }
             else {
                 if (hasUnclosedParentheses && lastIndexOfStackIsOperator) { //2. durum 1. seçenek (parantez aç)
-                    operationButtonClick(ParantezAc())
+                    operationButtonClick(OpenParenthesis())
                     isStartingWithOperator = true
                 } else if (hasUnclosedParentheses) { // 2. durum 2. seçenek (parantez kapa)
-                    operationButtonClick(ParantezKapa())
+                    operationButtonClick(ClosedParenthesis())
                 }
 
-                if (!hasUnclosedParentheses && lastIndexOfStackIsOperator) { // 1. durum 1. seçenek (parantez aç)
-                    operationButtonClick(ParantezAc())
+                if (!hasUnclosedParentheses && lastIndexOfStackIsOperator) { // 1. durum 2. seçenek (parantez aç)
+                    operationButtonClick(OpenParenthesis())
                     hasUnclosedParentheses = true
                     isStartingWithOperator = true
-                } else if (!hasUnclosedParentheses) { // 1. durum 2. seçenek (parantez aç)
-                    operationButtonClick(ParantezAc())
+                } else if (!hasUnclosedParentheses) { // 1. durum 1. seçenek (parantez aç)
+                    operationButtonClick(OpenParenthesis())
                     hasUnclosedParentheses = true
                 }
             }
@@ -240,8 +238,8 @@ class StandardCalculatorFragment : Fragment() {
 
             var parenthesesCount = 0
             for(i in NumbersAndOperators.indices){
-                if(NumbersAndOperators[i] is ParantezAc) parenthesesCount++
-                if(NumbersAndOperators[i] is ParantezKapa) parenthesesCount--
+                if(NumbersAndOperators[i] is OpenParenthesis) parenthesesCount++
+                if(NumbersAndOperators[i] is ClosedParenthesis) parenthesesCount--
             }
             hasUnclosedParentheses = (parenthesesCount != 0)
 
