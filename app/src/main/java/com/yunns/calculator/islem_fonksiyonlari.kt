@@ -250,7 +250,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = asin(tempNumHolder2)* (180 / PI)
 
-                //myStack.add(i, Number(result.toString()))
+                myStack.add(i, Number(result.toString()))
                 degreePart += result
                 i = -1
             }
@@ -259,7 +259,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = acos(tempNumHolder2)* (180 / PI)
 
-                //myStack.add(i, Number(result.toString()))
+                myStack.add(i, Number(result.toString()))
                 degreePart += result
 
                 i = -1
@@ -269,7 +269,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = atan(tempNumHolder2)* (180 / PI)
 
-                //myStack.add(i, Number(result.toString()))
+                myStack.add(i, Number(result.toString()))
                 degreePart += result
 
                 i = -1
@@ -279,7 +279,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 val result = atan(1.0 / tempNumHolder2)* (180 / PI)
 
-                //myStack.add(i, Number(result.toString()))
+                myStack.add(i, Number(result.toString()))
                 degreePart += result
 
                 i = -1
@@ -331,14 +331,17 @@ fun solveOperation(myStack :Stack<Operation>) : String{
     for (j in myStack.indices)  Log.e("result öncesi stack $j:", myStack[j].stringDegeri)
     Log.e("stack end :", "-------------------------")
 
-    val result = if(myStack.isNotEmpty() && degreePart != 0.0){
+    /*
+    val result = if(myStack.isNotEmpty() && degreePart != 0.0){//10 +arcsin(1/2) = 10+30degree
         myStack.last().stringDegeri + "+$degreePart${176.toChar()}"
     }
     else if(myStack.isNotEmpty()){
         myStack.last().stringDegeri
     }
-    else degreePart.toString()
+    else degreePart.toString() + "${176.toChar()}"
+*/
 
+    val result = myStack.last().stringDegeri
     myStack.removeAllElements()
 
     return result
@@ -376,32 +379,43 @@ fun trigonometricFuncPrefix(myStack: Stack<Operation>, position: Int){
 }
 
 
-fun fixFloatingNum(num:String) : String{
+fun fixFloatingNum(num:String) : String {
 
     var newNum = num
     var virguldenSonra = ""
     var virguldenOnce = ""
-    for (i in num.indices.reversed()){
-        if(num[i] == '.'){
-            virguldenSonra = num.substring(i+1,num.length)
-            virguldenOnce = num.substring(0,i)
+    for (i in num.indices.reversed()) {
+        if (num[i] == '.') {
+            virguldenSonra = num.substring(i + 1, num.length)
+            virguldenOnce = num.substring(0, i)
             break
         }
-        if(num[i] == 'E'){
+        if (num[i] == 'E') {
             virguldenSonra = "" //uzun sayılar için güvenlik
             break
         }
+    }
 
-        // örnek durum: "234.0000000000000000002"  ->
-        val hasRedundantFloatingPoint =
-            (num[i] == '0') && (num[i - 1] == '0') && (num[i - 2] == '0') && (num[i - 2] == '.')
-        if (hasRedundantFloatingPoint) {
-            return num.toDouble().roundToInt().toString()
+    // örnek durum: "234.0000000000000000002"  ->
+    for (i in num.indices.reversed()) {
+        if (virguldenSonra.length >= 3) {
+            val hasRedundantFloatingPoint =
+                (num[i] == '0') && (num[i - 1] == '0') && (num[i - 2] == '0') && (num[i - 3] == '.')
+            if (hasRedundantFloatingPoint) {
+                return num.toDouble().roundToInt().toString()
+            }
         }
     }
-    if(virguldenSonra.length >= 3) {
+
+    //1233.0 --> 1233
+    val hasRedundantFloatingPoint = (num.last() == '0') && (num[num.length - 2] == '.')
+    if (hasRedundantFloatingPoint) {
+        return num.toDouble().roundToInt().toString()
+    }
+
+    if (virguldenSonra.length >= 3) {
         for (i in virguldenSonra.indices.reversed()) {
-            if(i-2 < 0) break
+            if (i - 2 < 0) break
             if ((virguldenSonra[i] == '9') && (virguldenSonra[i - 1] == '9') && (virguldenSonra[i - 2] != '9')) {
                 virguldenSonra = virguldenSonra.substring(0, i - 1)
                 var tempChar = virguldenSonra.substring(i - 2, i - 1).toInt()

@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.TableRow
 import androidx.core.view.get
 import com.yunns.calculator.databinding.FragmentScientificCalculatorBinding
-import kotlin.math.roundToInt
+
 
 
 class ScientificCalculatorFragment : Fragment() {
@@ -279,12 +279,6 @@ class ScientificCalculatorFragment : Fragment() {
             if(txt.isNotEmpty() && !hasUnclosedParentheses) {
                 var result = solveOperation(NumbersAndOperators)
                 result = fixFloatingNum(result)
-
-                //örnek :"67384.0" 'daki ".0" ifadesini kaldırma:
-                val hasRedundantFloatingPoint = (result.last() == '0') && (result[result.length-2] == '.')
-                if(hasRedundantFloatingPoint){
-                    result = result.toDouble().roundToInt().toString()
-                }
 
                 tasarim.outputTextView2.text = result
                 txt = ""

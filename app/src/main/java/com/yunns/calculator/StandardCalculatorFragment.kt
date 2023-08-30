@@ -12,7 +12,7 @@ import android.widget.TableRow
 import android.widget.Toast
 import androidx.core.view.get
 import com.yunns.calculator.databinding.FragmentStandardCalculatorBinding
-import kotlin.math.roundToInt
+
 
 
 class StandardCalculatorFragment : Fragment() {
@@ -248,11 +248,6 @@ class StandardCalculatorFragment : Fragment() {
             if(txt.isNotEmpty() && !hasUnclosedParentheses) {
                 var result = solveOperation(NumbersAndOperators)
                 result = fixFloatingNum(result)
-
-                val redundantFloatingPoint = (result.last() == '0') && (result[result.length-2] == '.')
-                if(redundantFloatingPoint){
-                    result = result.toDouble().roundToInt().toString()
-                }
 
                 tasarim.outputTextView.text = result
                 txt = ""
