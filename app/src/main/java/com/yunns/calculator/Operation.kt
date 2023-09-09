@@ -1,11 +1,12 @@
 package com.yunns.calculator
 
+val allSymbols : Array<String> = arrayOf("x",247.toChar().toString(),"+","-","%",",","(",")","^",(8730).toChar().toString(),"!","m","o","d")
+
 interface Operation{
     val funcIndex: Int  // aynı türdeki fonksiyonları ayırt etmek için kullanılır
     val priorityValue: Int
-    val stringValue: String  // işlem yap fonksiyonunda kontrol edilmek üzere stack içine yazılan değer.
-    val symbolValue: String  // ekranda gösterilmek için kullanılan değer.
-
+    val stringValue: String
+    val symbolValue: String
 }
 
 class Numbers(value: String) : Operation {

@@ -103,8 +103,8 @@ class ScientificCalculatorFragment : Fragment() {
                                     } else false
                                 for (k in txt.indices.reversed()) {
                                     if (hasOperatorAtEnd) continue
-                                    val whereOperationEntered = //TODO("burayı yeni versiyon kontrolü ile yap ve kelime işlemleri düzgün sil")
-                                        (txt[k] == 'x') || (txt[k] == 247.toChar()) || (txt[k] == '+') || (txt[k] == '-') || (txt[k] == '%') || (txt[k] == ',') || (txt[k] == '(') || (txt[k] == ')') || (txt[k] == 'd') || (txt[k] == '^') || (txt[k] == (8730).toChar())
+                                    val whereOperationEntered =
+                                    (txt[k] == 'x') || (txt[k] == 247.toChar()) || (txt[k] == '+') || (txt[k] == '-') || (txt[k] == '%') || (txt[k] == ',') || (txt[k] == '(') || (txt[k] == ')') || (txt[k] == 'd') || (txt[k] == '^') || (txt[k] == (8730).toChar())
                                     if (whereOperationEntered) {
                                         lastEnteredOperationIndex = k + 1
                                         isThereOperatorAtAll = true
@@ -162,8 +162,6 @@ class ScientificCalculatorFragment : Fragment() {
                 tasarim.inputTextView2.text = txt
 
                 //stack'ten silme işlemi:
-                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringValue)
-                Log.e("stack end:", "-------------------------")
 
                 val isOperatorConsistWord = NumbersAndOperators[NumbersAndOperators.lastIndex].funcIndex == 6
                 val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Numbers)
