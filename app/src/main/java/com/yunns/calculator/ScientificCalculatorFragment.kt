@@ -175,7 +175,7 @@ class ScientificCalculatorFragment : Fragment() {
                 else if(lastIndexOfStackIsOperator && NumbersAndOperators.isNotEmpty()){
                     NumbersAndOperators.pop()
                 } else if(NumbersAndOperators.isNotEmpty()){
-                    val tempNum = NumbersAndOperators.last().stringValue.removeSuffix(removedChar.toString())
+                    val tempNum = NumbersAndOperators.last().symbolValue.removeSuffix(removedChar.toString())
                     NumbersAndOperators.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
                         NumbersAndOperators.push(Numbers(tempNum))
@@ -204,24 +204,24 @@ class ScientificCalculatorFragment : Fragment() {
 
         //operation buttons:
         tasarim.buttonCarpma.setOnClickListener {
-            operationButtonClick(Carpma())
+            operationButtonClick(Multiply())
         }
         tasarim.buttonBolme.setOnClickListener {
-            operationButtonClick(Bolme())
+            operationButtonClick(Division())
         }
         tasarim.buttonToplama.setOnClickListener {
-            operationButtonClick(Toplama())
+            operationButtonClick(Addition())
         }
         tasarim.buttonCikarma.setOnClickListener {
-            operationButtonClick(Cikarma())
+            operationButtonClick(Subtraction())
         }
         tasarim.buttonYuzde.setOnClickListener {
             //yüzde diğer işlemlerden farklı olarak sayıdan sonra kullanılıyor (işlem yüzde ile bitebilir.)
-            operationButtonClick(Yuzde())
+            operationButtonClick(Percentage())
         }
 
         tasarim.buttonVirgul.setOnClickListener {
-            operationButtonClick(Virgul())
+            operationButtonClick(Comma())
         }
 
         tasarim.buttonParantez.setOnClickListener {
@@ -271,7 +271,7 @@ class ScientificCalculatorFragment : Fragment() {
 
         //equal button
         tasarim.buttonEsittir.setOnClickListener {
-            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].stringValue)
+            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].symbolValue)
             Log.e("stack :", "-------------------------")
 
             var parenthesesCount = 0

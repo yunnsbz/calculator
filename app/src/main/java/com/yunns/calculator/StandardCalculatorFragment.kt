@@ -123,7 +123,7 @@ class StandardCalculatorFragment : Fragment() {
                 tasarim.inputTextView.text = txt
 
             //stack'ten silme işlemi:
-                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringValue)
+                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].symbolValue)
                 Log.e("stack end:", "-------------------------")
 
                 val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Numbers)
@@ -131,7 +131,7 @@ class StandardCalculatorFragment : Fragment() {
                 if(lastIndexOfStackIsOperator && NumbersAndOperators.isNotEmpty()){
                     NumbersAndOperators.pop()
                 } else if(NumbersAndOperators.isNotEmpty()){
-                    val tempNum = NumbersAndOperators.last().stringValue.removeSuffix(removedChar.toString())
+                    val tempNum = NumbersAndOperators.last().symbolValue.removeSuffix(removedChar.toString())
                     NumbersAndOperators.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
                         NumbersAndOperators.push(Numbers(tempNum))
@@ -161,20 +161,20 @@ class StandardCalculatorFragment : Fragment() {
 
     //operation buttons:
         tasarim.buttonCarpma.setOnClickListener {
-            operationButtonClick(Carpma())
+            operationButtonClick(Multiply())
         }
         tasarim.buttonBolme.setOnClickListener {
-            operationButtonClick(Bolme())
+            operationButtonClick(Division())
         }
         tasarim.buttonToplama.setOnClickListener {
-            operationButtonClick(Toplama())
+            operationButtonClick(Addition())
         }
         tasarim.buttonCikarma.setOnClickListener {
-            operationButtonClick(Cikarma())
+            operationButtonClick(Subtraction())
         }
         tasarim.buttonYuzde.setOnClickListener {
             //yüzde diğer işlemlerden farklı olarak sayıdan sonra kullanılıyor (işlem yüzde ile bitebilir.)
-            operationButtonClick(Yuzde())
+            operationButtonClick(Percentage())
         }
         tasarim.buttonYuzde.setOnLongClickListener {// yüzde butonunun nasıl kullanıldığını göstersin
             Toast.makeText(this.requireContext(),"1. yöntem:  10 %  -> 10'u 100 e böl\n" +
@@ -183,7 +183,7 @@ class StandardCalculatorFragment : Fragment() {
             true
         }
         tasarim.buttonVirgul.setOnClickListener {
-            operationButtonClick(Virgul())
+            operationButtonClick(Comma())
         }
 
         tasarim.buttonParantez.setOnClickListener {
@@ -233,7 +233,7 @@ class StandardCalculatorFragment : Fragment() {
 
     //eşittir butonu
         tasarim.buttonEsittir.setOnClickListener {
-            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].stringValue)
+            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].symbolValue)
             Log.e("stack :", "-------------------------")
 
             var parenthesesCount = 0

@@ -35,14 +35,14 @@ fun solveOperation(myStack :Stack<Operation>) : String{
     do{
         when (myStack[i]) {
 
-            is Carpma -> {
+            is Multiply -> {
                 val isMultiplicationPossible =
                     if (i + 2 > myStack.size - 1) true
                     else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
 
                 if (isMultiplicationPossible) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble()
                     val result = tempNumHolder1 * tempNumHolder2
                     myStack.add(i, Numbers(result.toString()))
                     myStack.removeAt(i - 1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
@@ -50,14 +50,14 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                     i = -1
                 }
             }
-            is Bolme -> {
+            is Division -> {
                 val isDivisionPossible =
                     if (i + 2 > myStack.size - 1) true
                     else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
 
                 if (isDivisionPossible) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble()
                     val result = tempNumHolder1 / tempNumHolder2
                     myStack.add(i, Numbers(result.toString()))
                     myStack.removeAt(i - 1)  //işlemdeki ilk sayı, tempNumHolder1 hala stack içinde onu da kaldırmak gerek
@@ -65,11 +65,11 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                     i = -1
                 }
             }
-            is Cikarma -> {
+            is Subtraction -> {
                 if(myStack[i + 1] !is OpenParenthesis) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble() * -1
-                    myStack.add(i, Toplama())
+                    tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble() * -1
+                    myStack.add(i, Addition())
                     myStack.add(
                         i + 1,
                         Numbers(tempNumHolder2.toString())
@@ -78,7 +78,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                     i = -1
                 }
             }
-            is Toplama -> {
+            is Addition -> {
                 val isAdditionPossible =
                     if (i + 2 > myStack.size - 1) true
                     else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
@@ -86,7 +86,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                 if (isAdditionPossible) {
 
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble()
                     val result = tempNumHolder1 + tempNumHolder2
                     myStack.add(i, Numbers(result.toString()))
                     myStack.removeAt(i-1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
@@ -94,7 +94,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                     i = -1
                 }
             }
-            is Yuzde -> {
+            is Percentage -> {
                /*
                1. yöntem:  10 %             -> 10'u 100 e böl
                2. yöntem:  10 % 50          -> 10'un yüzde 50'sini hesapla
@@ -104,10 +104,10 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                     val operatorMethod =
                         if (i + 1 > myStack.size - 1) 1 //1. yöntem yüzde işlemi yap
                         else if (
-                            (myStack[i + 1] is Carpma) ||
-                            (myStack[i + 1] is Bolme) ||
-                            (myStack[i + 1] is Cikarma) ||
-                            (myStack[i + 1] is Toplama)
+                            (myStack[i + 1] is Multiply) ||
+                            (myStack[i + 1] is Division) ||
+                            (myStack[i + 1] is Subtraction) ||
+                            (myStack[i + 1] is Addition)
                         ) 1     //true 1. yöntem false 2. yöntem
                         else 2
                     if (operatorMethod == 1) {//1. yöntem
@@ -121,7 +121,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                         i = -1
                     } else {//2. yöntem
                         myStack.removeAt(i)
-                        tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                        tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble()
                         val newNum = tempNumHolder1 * tempNumHolder2 / 100
 
                         myStack.add(i, Numbers(newNum.toString()))
@@ -132,10 +132,10 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                 }
             }
 
-            is Virgul -> {
+            is Comma -> {
                 if(myStack[i + 1] !is OpenParenthesis) {
                     myStack.removeAt(i)
-                    var tempNumString = myStack.removeAt(i).stringValue
+                    var tempNumString = myStack.removeAt(i).symbolValue
                     //
                     if(tempNumString.last() == '0' && tempNumString[tempNumString.length-2] == '.'){
                         tempNumString = tempNumString.removeRange(tempNumString.length-2,tempNumString.length)
@@ -294,7 +294,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 if (isModPossible) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble()
                     val result = tempNumHolder1 % tempNumHolder2
                     myStack.add(i, Numbers(result.toString()))
                     myStack.removeAt(i-1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
@@ -327,7 +327,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 if (isPowerPossible) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble()
                     var result = 1.0
                     for(j in tempNumHolder2.toInt() downTo 1){
                         result *= tempNumHolder1
@@ -345,7 +345,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 if (isSquareRootPossible) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).symbolValue.toDouble()
                     val result = sqrt(tempNumHolder2)
                     myStack.add(i, Numbers(result.toString()))
 
@@ -356,9 +356,9 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
             else -> {//if it's a number
                 try {
-                    tempNumHolder1 = myStack[i].stringValue.toDouble()  //stack'ten çıkarmamalısın
+                    tempNumHolder1 = myStack[i].symbolValue.toDouble()  //stack'ten çıkarmamalısın
                 } catch (_: Exception) {
-                    Log.e("(stack okuma) sayi hatası:", "hata: ${myStack[i].stringValue}")
+                    Log.e("(stack okuma) sayi hatası:", "hata: ${myStack[i].symbolValue}")
                 }
             }
         }
@@ -374,7 +374,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
     }while (canLoop)
 
-    for (j in myStack.indices)  Log.e("result öncesi stack $j:", myStack[j].stringValue)
+    for (j in myStack.indices)  Log.e("result öncesi stack $j:", myStack[j].symbolValue)
     Log.e("stack end :", "-------------------------")
 
     /*
@@ -387,7 +387,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
     else degreePart.toString() + "${176.toChar()}"
 */
 
-    val result = myStack.last().stringValue
+    val result = myStack.last().symbolValue
     myStack.removeAllElements()
 
     return result
@@ -418,7 +418,7 @@ fun trigonometricFuncPrefix(myStack: Stack<Operation>, position: Int){
         }
         solveOperation(tempStack).toDouble()
     } else {
-        myStack.removeAt(myPosition).stringValue.toDouble()
+        myStack.removeAt(myPosition).symbolValue.toDouble()
     }
     myStack.removeAt(index) // "parantezKapa"yı kaldırır
 
