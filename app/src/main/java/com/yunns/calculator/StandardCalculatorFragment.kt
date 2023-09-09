@@ -39,17 +39,17 @@ class StandardCalculatorFragment : Fragment() {
 
                 //zaten bir işleme basılmışsa onu değiştir:
                 val operationAllreadyEntered = if(islem is OpenParenthesis) false
-                else ( (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == ',') || (txt.last() == '('))&& (islem.sembolDegeri != "(")
+                else ( (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == ',') || (txt.last() == '('))&& (islem.symbolValue != "(")
 
                 if (operationAllreadyEntered) {
                     txt = txt.removeRange(txt.length - 1 until txt.length)
-                    txt += islem.sembolDegeri
+                    txt += islem.symbolValue
                     tasarim.inputTextView.text = txt
 
                     NumbersAndOperators.pop()
                     NumbersAndOperators.push(islem)
                 } else {
-                    txt += islem.sembolDegeri
+                    txt += islem.symbolValue
                     tasarim.inputTextView.text = txt
 
                     NumbersAndOperators.push(islem)
@@ -123,7 +123,7 @@ class StandardCalculatorFragment : Fragment() {
                 tasarim.inputTextView.text = txt
 
             //stack'ten silme işlemi:
-                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringDegeri)
+                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringValue)
                 Log.e("stack end:", "-------------------------")
 
                 val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Numbers)
@@ -131,7 +131,7 @@ class StandardCalculatorFragment : Fragment() {
                 if(lastIndexOfStackIsOperator && NumbersAndOperators.isNotEmpty()){
                     NumbersAndOperators.pop()
                 } else if(NumbersAndOperators.isNotEmpty()){
-                    val tempNum = NumbersAndOperators.last().stringDegeri.removeSuffix(removedChar.toString())
+                    val tempNum = NumbersAndOperators.last().stringValue.removeSuffix(removedChar.toString())
                     NumbersAndOperators.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
                         NumbersAndOperators.push(Numbers(tempNum))
@@ -233,7 +233,7 @@ class StandardCalculatorFragment : Fragment() {
 
     //eşittir butonu
         tasarim.buttonEsittir.setOnClickListener {
-            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].stringDegeri)
+            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].stringValue)
             Log.e("stack :", "-------------------------")
 
             var parenthesesCount = 0

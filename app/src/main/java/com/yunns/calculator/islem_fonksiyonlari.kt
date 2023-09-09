@@ -12,6 +12,7 @@ import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlin.math.tan
 
 
@@ -37,11 +38,11 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Carpma -> {
                 val isMultiplicationPossible =
                     if (i + 2 > myStack.size - 1) true
-                    else (myStack[i].oncelikDegeri > myStack[i + 1].oncelikDegeri) && (myStack[i].oncelikDegeri  > myStack[i + 2].oncelikDegeri)
+                    else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
 
                 if (isMultiplicationPossible) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringDegeri.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
                     val result = tempNumHolder1 * tempNumHolder2
                     myStack.add(i, Numbers(result.toString()))
                     myStack.removeAt(i - 1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
@@ -52,11 +53,11 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Bolme -> {
                 val isDivisionPossible =
                     if (i + 2 > myStack.size - 1) true
-                    else (myStack[i].oncelikDegeri > myStack[i + 1].oncelikDegeri) && (myStack[i].oncelikDegeri  > myStack[i + 2].oncelikDegeri)
+                    else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
 
                 if (isDivisionPossible) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringDegeri.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
                     val result = tempNumHolder1 / tempNumHolder2
                     myStack.add(i, Numbers(result.toString()))
                     myStack.removeAt(i - 1)  //işlemdeki ilk sayı, tempNumHolder1 hala stack içinde onu da kaldırmak gerek
@@ -67,7 +68,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Cikarma -> {
                 if(myStack[i + 1] !is OpenParenthesis) {
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringDegeri.toDouble() * -1
+                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble() * -1
                     myStack.add(i, Toplama())
                     myStack.add(
                         i + 1,
@@ -80,13 +81,12 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Toplama -> {
                 val isAdditionPossible =
                     if (i + 2 > myStack.size - 1) true
-                    else (myStack[i].oncelikDegeri > myStack[i + 1].oncelikDegeri) && (myStack[i].oncelikDegeri  > myStack[i + 2].oncelikDegeri)
-                        //(myStack[i + 2] !is Carpma) && (myStack[i + 2] !is Bolme) && (myStack[i + 2] !is Yuzde) && (myStack[i + 2] !is Virgul) && (myStack[i + 1] !is ParantezAc)
+                    else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
 
                 if (isAdditionPossible) {
 
                     myStack.removeAt(i)
-                    tempNumHolder2 = myStack.removeAt(i).stringDegeri.toDouble()
+                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
                     val result = tempNumHolder1 + tempNumHolder2
                     myStack.add(i, Numbers(result.toString()))
                     myStack.removeAt(i-1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
@@ -121,7 +121,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                         i = -1
                     } else {//2. yöntem
                         myStack.removeAt(i)
-                        tempNumHolder2 = myStack.removeAt(i).stringDegeri.toDouble()
+                        tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
                         val newNum = tempNumHolder1 * tempNumHolder2 / 100
 
                         myStack.add(i, Numbers(newNum.toString()))
@@ -135,7 +135,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
             is Virgul -> {
                 if(myStack[i + 1] !is OpenParenthesis) {
                     myStack.removeAt(i)
-                    var tempNumString = myStack.removeAt(i).stringDegeri
+                    var tempNumString = myStack.removeAt(i).stringValue
                     //
                     if(tempNumString.last() == '0' && tempNumString[tempNumString.length-2] == '.'){
                         tempNumString = tempNumString.removeRange(tempNumString.length-2,tempNumString.length)
@@ -287,17 +287,78 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
                 i = -1
             }
+            is Mod -> {
+                val isModPossible =
+                    if (i + 2 > myStack.size - 1) true
+                    else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
 
-            is Factorial -> {}
-            is Power -> {}
-            is SquareRoot -> {}
+                if (isModPossible) {
+                    myStack.removeAt(i)
+                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    val result = tempNumHolder1 % tempNumHolder2
+                    myStack.add(i, Numbers(result.toString()))
+                    myStack.removeAt(i-1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
+
+                    i = -1
+                }
+            }
+            is Factorial -> {
+                val isFactorialPossible =
+                    if (i + 1 > myStack.size - 1) true
+                    else (myStack[i].priorityValue > myStack[i + 1].priorityValue)
+
+                if (isFactorialPossible) {
+                    myStack.removeAt(i)
+                    var result : Long = 1
+                    for(j in tempNumHolder1.toInt() downTo 2){
+                        result *= j
+                    }
+
+                    myStack.add(i, Numbers(result.toString()))
+                    myStack.removeAt(i-1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
+
+                    i = -1
+                }
+            }
+            is Power -> {
+                val isPowerPossible =
+                    if (i + 2 > myStack.size - 1) true
+                    else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
+
+                if (isPowerPossible) {
+                    myStack.removeAt(i)
+                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    var result = 1.0
+                    for(j in tempNumHolder2.toInt() downTo 1){
+                        result *= tempNumHolder1
+                    }
+                    myStack.add(i, Numbers(result.toString()))
+                    myStack.removeAt(i-1)  //kalan tempNumHolder1 hala stack içinde onu da kaldırmak gerek
+
+                    i = -1
+                }
+            }
+            is SquareRoot -> {
+                val isSquareRootPossible =
+                    if (i + 2 > myStack.size - 1) true
+                    else (myStack[i].priorityValue > myStack[i + 1].priorityValue) && (myStack[i].priorityValue  > myStack[i + 2].priorityValue)
+
+                if (isSquareRootPossible) {
+                    myStack.removeAt(i)
+                    tempNumHolder2 = myStack.removeAt(i).stringValue.toDouble()
+                    val result = sqrt(tempNumHolder2)
+                    myStack.add(i, Numbers(result.toString()))
+
+                    i = -1
+                }
+            }
 
 
             else -> {//if it's a number
                 try {
-                    tempNumHolder1 = myStack[i].stringDegeri.toDouble()  //stack'ten çıkarmamalısın
+                    tempNumHolder1 = myStack[i].stringValue.toDouble()  //stack'ten çıkarmamalısın
                 } catch (_: Exception) {
-                    Log.e("(stack okuma) sayi hatası:", "hata: ${myStack[i]}")
+                    Log.e("(stack okuma) sayi hatası:", "hata: ${myStack[i].stringValue}")
                 }
             }
         }
@@ -313,7 +374,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
     }while (canLoop)
 
-    for (j in myStack.indices)  Log.e("result öncesi stack $j:", myStack[j].stringDegeri)
+    for (j in myStack.indices)  Log.e("result öncesi stack $j:", myStack[j].stringValue)
     Log.e("stack end :", "-------------------------")
 
     /*
@@ -326,7 +387,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
     else degreePart.toString() + "${176.toChar()}"
 */
 
-    val result = myStack.last().stringDegeri
+    val result = myStack.last().stringValue
     myStack.removeAllElements()
 
     return result
@@ -357,7 +418,7 @@ fun trigonometricFuncPrefix(myStack: Stack<Operation>, position: Int){
         }
         solveOperation(tempStack).toDouble()
     } else {
-        myStack.removeAt(myPosition).stringDegeri.toDouble()
+        myStack.removeAt(myPosition).stringValue.toDouble()
     }
     myStack.removeAt(index) // "parantezKapa"yı kaldırır
 
@@ -382,8 +443,8 @@ fun fixFloatingNum(num:String) : String {
     }
 
     // örnek durum: "234.0000000000000000002"  ->
-    for (i in num.indices.reversed()) {
-        if (virguldenSonra.length >= 3) {
+    for (i in num.length-1 downTo 4 ) {
+        if (virguldenSonra.length > 3) {
             val hasRedundantFloatingPoint =
                 (num[i] == '0') && (num[i - 1] == '0') && (num[i - 2] == '0') && (num[i - 3] == '.')
             if (hasRedundantFloatingPoint) {

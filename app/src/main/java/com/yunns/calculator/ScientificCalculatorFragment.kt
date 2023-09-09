@@ -45,22 +45,22 @@ class ScientificCalculatorFragment : Fragment() {
 
         fun operationButtonClick(islem: Operation){
             val isParenthesisAllowed = !(NumbersAndOperators.isNotEmpty() && (NumbersAndOperators.last() is Numbers) && (islem is OpenParenthesis)) //number cannot come before parenthesis
-            val startControl = (islem is OpenParenthesis) || (islem.funcIndex == 6)
+            val startControl = (islem is OpenParenthesis) || (islem.funcIndex == 6) || (islem is SquareRoot)
             if(isParenthesisAllowed && (txt.isNotEmpty() || startControl)) {
                 //zaten bir işleme basılmışsa onu değiştir:
                 val operationAllreadyEntered = if(startControl) false
-                else ( (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == ',') || (txt.last() == '('))&& (islem.sembolDegeri != "(")
+                else ( (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == ',') || (txt.last() == '(') || (txt.last() == (8730).toChar()) || (txt.last() == '^') ) && (islem !is OpenParenthesis) && (islem !is SquareRoot)
 
                 if (operationAllreadyEntered) {
                     txt = txt.removeRange(txt.length - 1 until txt.length)
-                    txt += islem.sembolDegeri
+                    txt += islem.symbolValue
                     tasarim.inputTextView2.text = txt
 
                     NumbersAndOperators.pop()
                     NumbersAndOperators.push(islem)
 
                 } else {
-                    txt += islem.sembolDegeri
+                    txt += islem.symbolValue
                     tasarim.inputTextView2.text = txt
 
                     NumbersAndOperators.push(islem)
@@ -95,25 +95,25 @@ class ScientificCalculatorFragment : Fragment() {
                                 tasarim.inputTextView2.text = txt
 
                                 //sayıyı Stack'e ekleme:
-                                var isThereOperator = true
+                                var isThereOperatorAtAll = true
                                 var lastEnteredOperationIndex = 0
                                 val hasOperatorAtEnd =
                                     if (txt.isNotEmpty()) { //eleman silindiği için tekrar kontrol etmek gerekli
-                                        (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == '%') || (txt.last() == ',') || (txt.last() == '(') || (txt.last() == ')')
+                                        (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == '%') || (txt.last() == ',') || (txt.last() == '(') || (txt.last() == ')') || (txt.last() == 'd') || (txt.last() == '^') || (txt.last() == (8730).toChar())
                                     } else false
                                 for (k in txt.indices.reversed()) {
                                     if (hasOperatorAtEnd) continue
-                                    val whereOperationEntered =
-                                        (txt[k] == 'x') || (txt[k] == 247.toChar()) || (txt[k] == '+') || (txt[k] == '-') || (txt[k] == '%') || (txt[k] == ',') || (txt[k] == '(') || (txt[k] == ')')
+                                    val whereOperationEntered = //TODO("burayı yeni versiyon kontrolü ile yap ve kelime işlemleri düzgün sil")
+                                        (txt[k] == 'x') || (txt[k] == 247.toChar()) || (txt[k] == '+') || (txt[k] == '-') || (txt[k] == '%') || (txt[k] == ',') || (txt[k] == '(') || (txt[k] == ')') || (txt[k] == 'd') || (txt[k] == '^') || (txt[k] == (8730).toChar())
                                     if (whereOperationEntered) {
                                         lastEnteredOperationIndex = k + 1
-                                        isThereOperator = true
+                                        isThereOperatorAtAll = true
                                         break
                                     } else {
-                                        isThereOperator = false
+                                        isThereOperatorAtAll = false
                                     }
                                 }
-                                if (!isThereOperator) {
+                                if (!isThereOperatorAtAll) {
                                     lastEnteredOperationIndex = 0
                                     if (NumbersAndOperators.isNotEmpty()) NumbersAndOperators.pop()// yeni gelecek sayıyı eklemek için
                                 } else if (isNumberEnteringContinue) { // birçok yerde değişen durum (sayı silmede: true, işlem butonu basma: false)
@@ -162,15 +162,22 @@ class ScientificCalculatorFragment : Fragment() {
                 tasarim.inputTextView2.text = txt
 
                 //stack'ten silme işlemi:
-                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringDegeri)
+                for (i in NumbersAndOperators.indices)  Log.e("silmeden önce stack $i:", NumbersAndOperators[i].stringValue)
                 Log.e("stack end:", "-------------------------")
 
+                val isOperatorConsistWord = NumbersAndOperators[NumbersAndOperators.lastIndex].funcIndex == 6
                 val lastIndexOfStackIsOperator: Boolean = (NumbersAndOperators.last() !is Numbers)
 
-                if(lastIndexOfStackIsOperator && NumbersAndOperators.isNotEmpty()){
+                if(isOperatorConsistWord){
+                    val operatorWordLength = NumbersAndOperators[NumbersAndOperators.lastIndex].symbolValue.length
+                    txt = txt.removeRange(txt.length - operatorWordLength +1 until txt.length)
+                    tasarim.inputTextView2.text = txt
+                    NumbersAndOperators.pop()
+                }
+                else if(lastIndexOfStackIsOperator && NumbersAndOperators.isNotEmpty()){
                     NumbersAndOperators.pop()
                 } else if(NumbersAndOperators.isNotEmpty()){
-                    val tempNum = NumbersAndOperators.last().stringDegeri.removeSuffix(removedChar.toString())
+                    val tempNum = NumbersAndOperators.last().stringValue.removeSuffix(removedChar.toString())
                     NumbersAndOperators.pop()
                     isNumberEnteringContinue = if(tempNum != "") {
                         NumbersAndOperators.push(Numbers(tempNum))
@@ -266,7 +273,7 @@ class ScientificCalculatorFragment : Fragment() {
 
         //equal button
         tasarim.buttonEsittir.setOnClickListener {
-            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].stringDegeri)
+            for (i in NumbersAndOperators.indices)  Log.e("işlem öncesi stack $i:", NumbersAndOperators[i].stringValue)
             Log.e("stack :", "-------------------------")
 
             var parenthesesCount = 0
