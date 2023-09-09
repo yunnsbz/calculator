@@ -35,7 +35,7 @@ class ScientificCalculatorFragment : Fragment() {
         185 üs 1
         178 üs 2
         179 üs 3
-        176 derece
+        176 degree
          */
 
         var txt = ""
