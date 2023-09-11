@@ -396,31 +396,30 @@ fun solveOperation(myStack :Stack<Operation>) : String{
 
 
 fun trigonometricFuncPrefix(myStack: Stack<Operation>, position: Int){
-    var myPosition = position
-    myStack.removeAt(myPosition)
+    var operationIndex = position
+    myStack.removeAt(operationIndex)
 
     // parantez içinde birden fazla eleman var mı:
-    val index = myPosition
     var parenthesesCount = 0
-    for(j in myPosition .. myStack.lastIndex){ // sin() içindeki parantez sayısını hesaplar
+    for(j in operationIndex .. myStack.lastIndex){ // sin() içindeki parantez sayısını hesaplar
         if(myStack[j] is OpenParenthesis) parenthesesCount++
         if(myStack[j] is ClosedParenthesis) parenthesesCount--
-        myPosition = j-1
+        operationIndex = j-1
         if(parenthesesCount == 0) break //ilk sıfırlandığında çıksın
     }
-    myStack.removeAt(index) // ilk "parantezAc"ı kaldırır
-    myPosition--
-    tempNumHolder2 = if (index != myPosition) {
+    myStack.removeAt(position) // ilk "parantezAc"ı kaldırır
+    operationIndex--
+    tempNumHolder2 = if (position != operationIndex) {
         val tempStack = Stack<Operation>()
-        for (k in index..myPosition) {
-            tempStack.push(myStack[index])//index sabit çünkü sildikçe öndeki elemanlar bir sıra geriye gelir
-            myStack.removeAt(index)
+        for (k in position..operationIndex) {
+            tempStack.push(myStack[position])//index sabit çünkü sildikçe öndeki elemanlar bir sıra geriye gelir
+            myStack.removeAt(position)
         }
         solveOperation(tempStack).toDouble()
     } else {
-        myStack.removeAt(myPosition).symbolValue.toDouble()
+        myStack.removeAt(operationIndex).symbolValue.toDouble()
     }
-    myStack.removeAt(index) // "parantezKapa"yı kaldırır
+    myStack.removeAt(position) // "parantezKapa"yı kaldırır
 
 }
 
@@ -447,6 +446,7 @@ fun fixFloatingNum(num:String) : String {
         if (virguldenSonra.length > 3) {
             val hasRedundantFloatingPoint =
                 (num[i] == '0') && (num[i - 1] == '0') && (num[i - 2] == '0') && (num[i - 3] == '.')
+                        || (num[i] == '9') && (num[i - 1] == '9') && (num[i - 2] == '9') && (num[i - 3] == '.')
             if (hasRedundantFloatingPoint) {
                 return num.toDouble().roundToInt().toString()
             }
