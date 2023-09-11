@@ -99,12 +99,12 @@ class ScientificCalculatorFragment : Fragment() {
                                 var lastEnteredOperationIndex = 0
                                 val hasOperatorAtEnd =
                                     if (txt.isNotEmpty()) { //eleman silindiği için tekrar kontrol etmek gerekli
-                                        (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == '%') || (txt.last() == ',') || (txt.last() == '(') || (txt.last() == ')') || (txt.last() == 'd') || (txt.last() == '^') || (txt.last() == (8730).toChar())
+                                        (txt.last() == 'x') || (txt.last() == 247.toChar()) || (txt.last() == '+') || (txt.last() == '-') || (txt.last() == '%') || (txt.last() == ',') || (txt.last() == '(') || (txt.last() == ')') || (txt.last() == '^') || (txt.last() == (8730).toChar())
                                     } else false
                                 for (k in txt.indices.reversed()) {
                                     if (hasOperatorAtEnd) continue
                                     val whereOperationEntered =
-                                    (txt[k] == 'x') || (txt[k] == 247.toChar()) || (txt[k] == '+') || (txt[k] == '-') || (txt[k] == '%') || (txt[k] == ',') || (txt[k] == '(') || (txt[k] == ')') || (txt[k] == 'd') || (txt[k] == '^') || (txt[k] == (8730).toChar())
+                                    (txt[k] == 'x') || (txt[k] == 247.toChar()) || (txt[k] == '+') || (txt[k] == '-') || (txt[k] == '%') || (txt[k] == ',') || (txt[k] == '(') || (txt[k] == ')') || (txt[k] == '^') || (txt[k] == (8730).toChar())
                                     if (whereOperationEntered) {
                                         lastEnteredOperationIndex = k + 1
                                         isThereOperatorAtAll = true

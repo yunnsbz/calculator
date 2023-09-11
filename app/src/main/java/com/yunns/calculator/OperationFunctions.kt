@@ -22,8 +22,8 @@ var NumbersAndOperators = Stack<Operation>()
 var tempNumHolder1 : Double = 0.0
 var tempNumHolder2 : Double = 0.0
 
-const val PI = 3.1415926535
-const val E  = 2.7182818284
+const val PI = kotlin.math.PI
+const val E  = kotlin.math.E
 
 var isStartingWithOperator = false
 fun solveOperation(myStack :Stack<Operation>) : String{
