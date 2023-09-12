@@ -165,22 +165,52 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                 //ilk denk gelinen "parantez aç"ı bul
                 for (j in i-1 downTo 0){
                     if(myStack[j] is OpenParenthesis){
-                        //ilk denk gelinen "parantez aç"ı kaldır
-                        myStack.removeAt(j)
+                        var insideOfParentheses: IntRange
 
-                        // parantez içindeki işlemler geçici stack'e alınır. sayiVeIslemler'den elemanlar silinip yerine işlem sonucu eklenicek
-                        for (k in j until i - 1) {
-                            tempStack.push(myStack[j])//index sabit çünkü sildikçe öndeki elemanlar bir sıra geriye gelir
-                            myStack.removeAt(j)
+                        if(myStack[j-1].funcIndex == 6){ // you shouldn't remove parentheses if the operation is a trigonometric function
+                            insideOfParentheses = j+1 until i
+                            for (k in insideOfParentheses) {
+                                tempStack.push(myStack[j+1])//index sabit çünkü sildikçe öndeki elemanlar bir sıra geriye gelir
+                                myStack.removeAt(j+1)
+                            }
+                            var result = solveOperation(tempStack)
+                            result = fixFloatingNum(result)
+                            myStack.add(j+1, Numbers(result))
+
+                            //doing the trigonometric func
+                            tempStack.removeAllElements()
+
+                            val trigonometricOperationRange = j-1 .. j+2
+                            for (k in trigonometricOperationRange) {
+                                tempStack.push(myStack[j-1])
+                                myStack.removeAt(j-1)
+                            }
+
+                            result = solveOperation(tempStack)
+                            result = fixFloatingNum(result)
+                            myStack.add(j-1, Numbers(result))
+                            i = -1
+                            break
                         }
-                        myStack.removeAt(j)//parantez kapa'yı kaldır
+                        else {
+                            //ilk denk gelinen "parantez aç"ı kaldır
+                            myStack.removeAt(j)
 
-                        var result = solveOperation(tempStack)
-                        result = fixFloatingNum(result)
-                        myStack.add(j, Numbers(result))
+                            // parantez içindeki işlemler geçici stack'e alınır. sayiVeIslemler'den elemanlar silinip yerine işlem sonucu eklenicek
+                            insideOfParentheses = j until i - 1
+                            for (k in insideOfParentheses) {
+                                tempStack.push(myStack[j])//index sabit çünkü sildikçe öndeki elemanlar bir sıra geriye gelir
+                                myStack.removeAt(j)
+                            }
+                            myStack.removeAt(j)//parantez kapa'yı kaldır
 
-                        i = -1
-                        break
+                            var result = solveOperation(tempStack)
+                            result = fixFloatingNum(result)
+                            myStack.add(j, Numbers(result))
+
+                            i = -1
+                            break
+                        }
                     }
                 }
             }

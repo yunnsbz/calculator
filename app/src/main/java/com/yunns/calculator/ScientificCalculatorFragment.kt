@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TableRow
+import android.widget.Toast
 import androidx.core.view.get
 import com.yunns.calculator.databinding.FragmentScientificCalculatorBinding
 
@@ -288,7 +289,9 @@ class ScientificCalculatorFragment : Fragment() {
                 tasarim.outputTextView2.text = result
                 txt = ""
             }
-            else Log.e("eşittir tuşu problemi :", "açık parantez var mı: $hasUnclosedParentheses ")
+            else if(hasUnclosedParentheses){
+                Toast.makeText(this.requireContext(),(R.string.closeParentheses),Toast.LENGTH_SHORT).show()
+            }
         }
 
         // scientific buttons:

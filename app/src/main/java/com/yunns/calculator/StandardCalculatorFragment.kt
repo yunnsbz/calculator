@@ -250,7 +250,9 @@ class StandardCalculatorFragment : Fragment() {
                 tasarim.outputTextView.text = result
                 txt = ""
             }
-            else Log.e("eşittir tuşu problemi :", "açık parantez var mı: $hasUnclosedParentheses ")
+            else if(hasUnclosedParentheses){
+                Toast.makeText(this.requireContext(),(R.string.closeParentheses),Toast.LENGTH_SHORT).show()
+            }
         }
 
         return tasarim.root

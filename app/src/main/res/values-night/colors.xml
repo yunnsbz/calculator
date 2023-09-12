@@ -8,4 +8,6 @@
     <color name="primary_foreground">#C1C1C1</color>
     <color name="esittir_tusu_renk">#245736</color>
     <color name="primary_background">#1B1C1A</color>
+    <color name="Scientific_button">#32362D</color>
+    <color name="shift_button">#3F4538</color>
 </resources>

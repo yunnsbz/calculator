@@ -464,7 +464,7 @@
                 android:backgroundTint="@color/shift_button"
                 android:padding="0dp"
                 android:text="shift"
-                android:textColor="@color/primary_background"
+                android:textColor="@color/primary_foreground"
                 android:textSize="20sp" />
 
             <Button
