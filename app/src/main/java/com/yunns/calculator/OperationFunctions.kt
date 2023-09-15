@@ -167,7 +167,7 @@ fun solveOperation(myStack :Stack<Operation>) : String{
                     if(myStack[j] is OpenParenthesis){
                         var insideOfParentheses: IntRange
 
-                        if(myStack[j-1].funcIndex == 6){ // you shouldn't remove parentheses if the operation is a trigonometric function
+                        if(j-1 >= 0 && myStack[j-1].funcIndex == 6){ // you shouldn't remove parentheses if the operation is a trigonometric function
                             insideOfParentheses = j+1 until i
                             for (k in insideOfParentheses) {
                                 tempStack.push(myStack[j+1])//index sabit çünkü sildikçe öndeki elemanlar bir sıra geriye gelir
