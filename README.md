@@ -1,6 +1,6 @@
 # calculator
 
-A calculator app that have both standart and scientific mode.
+A calculator app that have both standard and scientific mode.
 Made in android studio with kotlin.
 
 ### preview
